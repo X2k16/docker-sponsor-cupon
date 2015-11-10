@@ -1,0 +1,35 @@
+db-data:
+  build: db-data
+
+
+hub:
+  image: selenium/hub
+  environment:
+    - LANG=ja_JP.UTF-8
+
+chrome:
+  image: selenium/node-chrome-debug
+  environment:
+    - LANG=ja_JP.UTF-8
+  links:
+    - hub
+  ports:
+    - "5900:5900"
+
+app:
+  build: app
+  volumes_from:
+    - db-data
+  env_file:
+    - common.env
+  links:
+    - hub
+
+web:
+  build: web
+  links:
+    - app
+  volumes_from:
+    - app
+  ports:
+    - "8002:80"
